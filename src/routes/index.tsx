@@ -4,10 +4,9 @@ import { Camera, Trash2 } from "lucide-react";
 import { JobTailoring } from "@/components/JobTailoring";
 import { PhotoCropper } from "@/components/PhotoCropper";
 import { ResumePreview } from "@/components/ResumePreview";
-import { PixCheckout } from "@/components/PixCheckout";
 import { Button } from "@/components/ui/button";
 import {
-  CV_EXEMPLO, FORMATOS, RAMOS, PRECO, lista, textoCarta,
+  CV_EXEMPLO, FORMATOS, RAMOS, lista, textoCarta,
   type Carta, type Curriculo, type Formato,
 } from "@/lib/cv";
 
@@ -17,7 +16,7 @@ export const Route = createFileRoute("/")({
       { title: "Currículo Fácil — Monte seu currículo pelo celular" },
       { name: "description", content: "Crie currículo e carta de apresentação em minutos, pelo celular. 5 modelos, preenchimento com 1 clique e envio pelo WhatsApp." },
       { property: "og:title", content: "Currículo Fácil — Monte seu currículo pelo celular" },
-      { property: "og:description", content: "Currículo e carta de apresentação prontos em minutos. Pague uma vez via Pix e use para sempre." },
+      { property: "og:description", content: "Currículo e carta de apresentação prontos em minutos, grátis. Envie em PDF ou pelo WhatsApp." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -76,9 +75,7 @@ function App() {
   const [cv, setCv] = usePersist<Curriculo>("cf-cv", CV_EXEMPLO);
   const [formato, setFormato] = usePersist<Formato>("cf-formato", "simples");
   const [carta, setCarta] = usePersist<Carta>("cf-carta", { ramo: "comercio", nome: "", empresa: "", vaga: "", telefone: "" });
-  const [pago, setPago] = usePersist<boolean>("cf-pago", false);
   const [letra, setLetra] = usePersist<number>("cf-letra", 1);
-  const [checkout, setCheckout] = useState(false);
   const [previa, setPrevia] = useState(false);
   const [erroFoto, setErroFoto] = useState("");
   const [fotoParaAjustar, setFotoParaAjustar] = useState("");
@@ -116,14 +113,13 @@ function App() {
     leitor.readAsDataURL(arquivo);
   };
 
-  const exigir = (fn: () => void) => () => (pago ? fn() : setCheckout(true));
-  const baixar = exigir(() => { setPrevia(true); setTimeout(() => window.print(), 300); });
-  const whats = exigir(() => {
+  const baixar = () => { setPrevia(true); setTimeout(() => window.print(), 300); };
+  const whats = () => {
     const msg = aba === "carta"
       ? txtCarta
       : `Olá! Meu nome é ${cv.nome}. Tenho interesse em trabalhar com vocês como ${cv.cargo || "colaborador(a)"}.\n\n${cv.objetivo}\n\nQualidades: ${lista(cv.qualidades).join(", ")}.\n\nContato: ${cv.telefone}\nPosso enviar meu currículo em PDF. Obrigado(a)!`;
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
-  });
+  };
 
   return (
     <div style={{ fontSize: `${[15, 17, 20, 23][letra]}px` }} className="min-h-screen pb-32">
@@ -131,7 +127,7 @@ function App() {
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3">
           <div className="min-w-0">
             <p className="truncate font-display text-[1.25em] font-bold leading-none">Currículo <span className="text-primary">Fácil</span></p>
-            <p className="text-[0.7em] text-muted-foreground">{pago ? "✓ Versão completa" : "Teste grátis"} · <span className="text-primary">💾 Salvo automaticamente</span></p>
+            <p className="text-[0.7em] text-muted-foreground">Grátis · <span className="text-primary">💾 Salvo automaticamente</span></p>
           </div>
           <div className="flex shrink-0 items-center gap-1" aria-label="Tamanho da letra">
             <button onClick={() => setLetra(Math.max(0, letra - 1))} disabled={letra === 0} aria-label="Diminuir letra" className="rounded-full border-2 border-foreground px-3 py-2 text-[0.8em] font-bold disabled:opacity-30">A−</button>
@@ -252,11 +248,6 @@ function App() {
             {aba === "cv"
               ? <ResumePreview cv={cv} formato={formato} />
               : <div className="cv-page whitespace-pre-line p-8 text-[13px] leading-relaxed text-cv-ink">{txtCarta}</div>}
-            {!pago && (
-              <div className="no-print pointer-events-none absolute inset-0 flex items-center justify-center">
-                <span className="-rotate-12 rounded bg-foreground/70 px-4 py-2 font-display text-lg font-bold text-background">PRÉVIA · TESTE GRÁTIS</span>
-              </div>
-            )}
           </div>
         </div>
       </main>
@@ -267,14 +258,8 @@ function App() {
           <button onClick={baixar} className="btn-big bg-foreground text-background lg:col-span-2">⬇ PDF</button>
           <button onClick={whats} className="btn-big bg-primary text-primary-foreground lg:col-span-1">WhatsApp</button>
         </div>
-        {!pago && (
-          <button onClick={() => setCheckout(true)} className="mx-auto mt-2 block text-[0.8em] font-semibold text-primary underline">
-            Liberar tudo por {PRECO} — pagamento único
-          </button>
-        )}
       </nav>
 
-      {checkout && <PixCheckout onClose={() => setCheckout(false)} onPaid={() => setPago(true)} />}
       {fotoParaAjustar && (
         <PhotoCropper
           source={fotoParaAjustar}
