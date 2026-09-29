@@ -29,8 +29,18 @@ function usePersist<T>(key: string, init: T) {
   const [v, setV] = useState<T>(init);
   const [ok, setOk] = useState(false);
   useEffect(() => {
-    const s = localStorage.getItem(key);
-    if (s) try { setV(JSON.parse(s)); } catch {}
+    try {
+      const s = localStorage.getItem(key);
+      if (s) {
+        const salvo = JSON.parse(s) as unknown;
+        // junta o que foi salvo com o modelo padrão, para não perder campos novos
+        setV(
+          salvo && typeof salvo === "object" && !Array.isArray(salvo)
+            ? { ...(init as object), ...(salvo as object) } as T
+            : (salvo as T),
+        );
+      }
+    } catch {}
     setOk(true);
   }, [key]);
   useEffect(() => { if (ok) localStorage.setItem(key, JSON.stringify(v)); }, [key, v, ok]);
