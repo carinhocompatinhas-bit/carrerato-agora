@@ -132,6 +132,55 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+:root {
+  --background: oklch(0.985 0.012 95);
+  --foreground: oklch(0.22 0.03 150);
+  --card: oklch(1 0 0);
+  --primary: oklch(0.55 0.15 155);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.93 0.07 95);
+  --secondary-foreground: oklch(0.25 0.04 90);
+  --accent: oklch(0.94 0.05 155);
+  --muted: oklch(0.95 0.01 95);
+  --muted-foreground: oklch(0.45 0.02 150);
+  --border: oklch(0.88 0.02 95);
+  --input: oklch(0.82 0.02 95);
+  --cv-ink: oklch(0.2 0.01 250);
+}
+
+@theme inline {
+  --color-cv-ink: var(--cv-ink);
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-sans: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+
+@utility step {
+  font-family: var(--font-display);
+  font-size: 1.15em;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+@utility btn-big {
+  border-radius: 0.9rem;
+  padding: 0.85rem 0.75rem;
+  font-weight: 700;
+}
+
+@utility cv-page {
+  background: white;
+  min-height: 560px;
+  font-family: var(--font-sans);
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white !important; }
+  .print-area { display: block !important; }
+  .print-area > div { box-shadow: none !important; zoom: 1 !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -140,5 +189,6 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
   }
 }

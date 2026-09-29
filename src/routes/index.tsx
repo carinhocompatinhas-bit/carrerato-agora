@@ -51,7 +51,7 @@ function App() {
   const [formato, setFormato] = usePersist<Formato>("cf-formato", "simples");
   const [carta, setCarta] = usePersist<Carta>("cf-carta", { ramo: "comercio", nome: "", empresa: "", vaga: "", telefone: "" });
   const [pago, setPago] = usePersist<boolean>("cf-pago", false);
-  const [letra, setLetra] = usePersist<number>("cf-letra", 0);
+  const [letra, setLetra] = usePersist<number>("cf-letra", 1);
   const [checkout, setCheckout] = useState(false);
   const [previa, setPrevia] = useState(false);
 
@@ -68,16 +68,17 @@ function App() {
   });
 
   return (
-    <div style={{ fontSize: `${[17, 20, 23][letra]}px` }} className="min-h-screen pb-32">
+    <div style={{ fontSize: `${[15, 17, 20, 23][letra]}px` }} className="min-h-screen pb-32">
       <header className="no-print sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3">
           <div className="min-w-0">
             <p className="truncate font-display text-[1.25em] font-bold leading-none">Currículo <span className="text-primary">Fácil</span></p>
-            <p className="text-[0.7em] text-muted-foreground">{pago ? "✓ Versão completa" : "Teste grátis"}</p>
+            <p className="text-[0.7em] text-muted-foreground">{pago ? "✓ Versão completa" : "Teste grátis"} · <span className="text-primary">💾 Salvo automaticamente</span></p>
           </div>
-          <button onClick={() => setLetra((letra + 1) % 3)} className="shrink-0 rounded-full border-2 border-foreground px-3 py-2 text-[0.8em] font-bold">
-            A+ Aumentar Letra
-          </button>
+          <div className="flex shrink-0 items-center gap-1" aria-label="Tamanho da letra">
+            <button onClick={() => setLetra(Math.max(0, letra - 1))} disabled={letra === 0} aria-label="Diminuir letra" className="rounded-full border-2 border-foreground px-3 py-2 text-[0.8em] font-bold disabled:opacity-30">A−</button>
+            <button onClick={() => setLetra(Math.min(3, letra + 1))} disabled={letra === 3} aria-label="Aumentar letra" className="rounded-full border-2 border-foreground bg-foreground px-3 py-2 text-[0.8em] font-bold text-background disabled:opacity-30">A+</button>
+          </div>
         </div>
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-2 px-4 pb-3">
           {(["cv", "carta"] as const).map((t) => (
@@ -161,7 +162,7 @@ function App() {
             <h2 className="step !mb-0">Prévia</h2>
             <button onClick={() => setPrevia(false)} className="font-semibold text-primary underline lg:hidden">← Voltar e editar</button>
           </div>
-          <div className="relative overflow-hidden rounded-lg shadow-xl">
+          <div className="relative overflow-hidden rounded-lg shadow-xl" style={{ zoom: [0.9, 1, 1.15, 1.3][letra] }}>
             {aba === "cv"
               ? <ResumePreview cv={cv} formato={formato} />
               : <div className="cv-page whitespace-pre-line p-8 text-[13px] leading-relaxed text-cv-ink">{txtCarta}</div>}
