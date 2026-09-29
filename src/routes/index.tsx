@@ -33,17 +33,29 @@ function usePersist<T>(key: string, init: T) {
       const s = localStorage.getItem(key);
       if (s) {
         const salvo = JSON.parse(s) as unknown;
-        // junta o que foi salvo com o modelo padrão, para não perder campos novos
-        setV(
-          salvo && typeof salvo === "object" && !Array.isArray(salvo)
-            ? { ...(init as object), ...(salvo as object) } as T
-            : (salvo as T),
-        );
+        // aceita só valores do mesmo tipo do padrão, para dados antigos não quebrarem o app
+        if (init && typeof init === "object" && salvo && typeof salvo === "object" && !Array.isArray(salvo)) {
+          const base = init as Record<string, unknown>;
+          const out: Record<string, unknown> = { ...base };
+          for (const [k, val] of Object.entries(salvo as Record<string, unknown>)) {
+            if (!(k in base) || base[k] === undefined || typeof val === typeof base[k]) out[k] = val;
+          }
+          for (const k of Object.keys(out)) if (out[k] === null) out[k] = base[k] ?? "";
+          setV(out as T);
+        } else if (typeof salvo === typeof init) {
+          if (typeof init === "number") {
+            const n = salvo as number;
+            setV((Number.isInteger(n) && n >= 0 && n <= 3 ? n : init) as T);
+          } else setV(salvo as T);
+        }
       }
     } catch {}
     setOk(true);
   }, [key]);
-  useEffect(() => { if (ok) localStorage.setItem(key, JSON.stringify(v)); }, [key, v, ok]);
+  useEffect(() => {
+    if (!ok) return;
+    try { localStorage.setItem(key, JSON.stringify(v)); } catch {}
+  }, [key, v, ok]);
   return [v, setV] as const;
 }
 
