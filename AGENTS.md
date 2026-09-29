@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Fotos de currículo ficam somente no aparelho, em formato JPEG quadrado reduzido antes do salvamento, para preservar privacidade e espaço local.

@@ -35,6 +35,7 @@ export function ResumePreview({ cv, formato }: { cv: Curriculo; formato: Formato
     return (
       <div className="cv-page grid grid-cols-[35%_1fr] text-cv-ink">
         <aside className="bg-primary p-5 text-primary-foreground">
+          {cv.foto && <img src={cv.foto} alt={`Foto de ${nome}`} className="mb-3 aspect-square w-20 rounded-full border-2 border-primary-foreground object-cover" />}
           <h1 className="font-display text-xl font-bold leading-tight">{nome}</h1>
           <p className="mb-4 text-[12px] opacity-90">{cv.cargo}</p>
           <Sec t="Contato"><ul className="space-y-1 text-[11px] break-words">{contato.map((c) => <li key={c}>{c}</li>)}</ul></Sec>
@@ -51,14 +52,20 @@ export function ResumePreview({ cv, formato }: { cv: Curriculo; formato: Formato
     tradicional: { head: "text-center border-b border-cv-ink/40 pb-3 mb-4", h: "text-cv-ink border-b border-cv-ink/20 pb-0.5", wrap: "font-serif" },
     executivo: { head: "bg-cv-ink text-primary-foreground -mx-6 -mt-6 p-6 mb-5", h: "text-cv-ink tracking-[0.2em]", wrap: "" },
   };
-  const e = estilos[formato] ?? estilos['simples']!;
+  const e = estilos[formato] ?? estilos['simples'];
+  if (!e) return null;
 
   return (
     <div className={`cv-page p-6 text-cv-ink ${e.wrap}`}>
       <header className={e.head}>
-        <h1 className="font-display text-2xl font-bold leading-tight">{nome}</h1>
-        {cv.cargo && <p className="text-[13px] font-semibold opacity-80">{cv.cargo}</p>}
-        <p className="mt-1 text-[11px] opacity-80">{contato.join("  •  ")}</p>
+        <div className={`flex items-center gap-4 ${formato === "tradicional" ? "justify-center" : ""}`}>
+          {cv.foto && <img src={cv.foto} alt={`Foto de ${nome}`} className="aspect-square w-20 shrink-0 rounded-full border-2 border-current object-cover" />}
+          <div className={formato === "tradicional" ? "text-left" : ""}>
+            <h1 className="font-display text-2xl font-bold leading-tight">{nome}</h1>
+            {cv.cargo && <p className="text-[13px] font-semibold opacity-80">{cv.cargo}</p>}
+            <p className="mt-1 text-[11px] opacity-80">{contato.join("  •  ")}</p>
+          </div>
+        </div>
       </header>
       {corpo(e.h)}
       {cv.qualidades && (

@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { Camera, Trash2 } from "lucide-react";
 import { ResumePreview } from "@/components/ResumePreview";
 import { PixCheckout } from "@/components/PixCheckout";
+import { Button } from "@/components/ui/button";
 import {
   CV_EXEMPLO, FORMATOS, RAMOS, PRECO, lista, textoCarta,
   type Carta, type Curriculo, type Formato,
@@ -54,9 +56,56 @@ function App() {
   const [letra, setLetra] = usePersist<number>("cf-letra", 1);
   const [checkout, setCheckout] = useState(false);
   const [previa, setPrevia] = useState(false);
+  const [erroFoto, setErroFoto] = useState("");
+  const fotoInput = useRef<HTMLInputElement>(null);
 
   const up = (k: keyof Curriculo) => (v: string) => setCv({ ...cv, [k]: v });
   const txtCarta = textoCarta(carta);
+
+  const escolherProfissao = (id: (typeof RAMOS)[number]["id"]) => {
+    const profissao = RAMOS.find((item) => item.id === id);
+    if (!profissao) return;
+    setCv({ ...cv, cargo: profissao.cargo, objetivo: profissao.objetivo, qualidades: profissao.qualidades });
+    setFormato(profissao.formato);
+  };
+
+  const anexarFoto = (event: ChangeEvent<HTMLInputElement>) => {
+    const arquivo = event.target.files?.[0];
+    event.target.value = "";
+    if (!arquivo) return;
+    if (!arquivo.type.startsWith("image/")) {
+      setErroFoto("Escolha uma imagem do celular.");
+      return;
+    }
+    if (arquivo.size > 10 * 1024 * 1024) {
+      setErroFoto("A foto deve ter no máximo 10 MB.");
+      return;
+    }
+    const leitor = new FileReader();
+    leitor.onload = () => {
+      if (typeof leitor.result !== "string") return;
+      const imagem = new Image();
+      imagem.onload = () => {
+        const lado = Math.min(imagem.width, imagem.height);
+        const inicioX = (imagem.width - lado) / 2;
+        const inicioY = (imagem.height - lado) / 2;
+        const canvas = document.createElement("canvas");
+        canvas.width = 480;
+        canvas.height = 480;
+        const contexto = canvas.getContext("2d");
+        if (!contexto) {
+          setErroFoto("Não foi possível preparar esta foto.");
+          return;
+        }
+        contexto.drawImage(imagem, inicioX, inicioY, lado, lado, 0, 0, 480, 480);
+        setCv({ ...cv, foto: canvas.toDataURL("image/jpeg", 0.82) });
+        setErroFoto("");
+      };
+      imagem.onerror = () => setErroFoto("Não foi possível abrir esta foto.");
+      imagem.src = leitor.result;
+    };
+    leitor.readAsDataURL(arquivo);
+  };
 
   const exigir = (fn: () => void) => () => (pago ? fn() : setCheckout(true));
   const baixar = exigir(() => { setPrevia(true); setTimeout(() => window.print(), 300); });
@@ -108,20 +157,45 @@ function App() {
               </section>
 
               <section>
-                <h2 className="step">2. Preencha com 1 clique</h2>
-                <p className="mb-2 text-[0.85em] text-muted-foreground">Toque no seu ramo e o Objetivo e as Qualidades são preenchidos para você.</p>
+                <h2 className="step">2. Escolha sua profissão</h2>
+                <p className="mb-2 text-[0.85em] text-muted-foreground">Um toque preenche a vaga, o objetivo, as qualidades e escolhe um modelo adequado. Você pode editar tudo depois.</p>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {RAMOS.map((r) => (
-                    <button key={r.id} onClick={() => setCv({ ...cv, objetivo: r.objetivo, qualidades: r.qualidades })}
-                      className="rounded-xl bg-secondary px-3 py-3 font-semibold text-secondary-foreground active:scale-95">
-                      {r.emoji} {r.nome}
-                    </button>
+                    <Button key={r.id} variant="secondary" onClick={() => escolherProfissao(r.id)}
+                      className="h-auto min-h-14 justify-start whitespace-normal px-3 py-3 text-left text-[0.85em] font-semibold active:scale-95">
+                      <span aria-hidden="true">{r.emoji}</span><span>{r.nome}</span>
+                    </Button>
                   ))}
                 </div>
               </section>
 
               <section className="space-y-3">
                 <h2 className="step">3. Seus dados</h2>
+                <div className="rounded-lg border-2 border-dashed border-input p-3">
+                  <p className="font-semibold">Foto (opcional)</p>
+                  <p className="mb-3 text-[0.78em] text-muted-foreground">Escolha uma foto de rosto, bem iluminada e com fundo simples.</p>
+                  <div className="flex items-center gap-3">
+                    {cv.foto ? (
+                      <img src={cv.foto} alt="Sua foto no currículo" className="aspect-square w-20 shrink-0 rounded-full border-2 border-border object-cover" />
+                    ) : (
+                      <div className="flex aspect-square w-20 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground" aria-hidden="true">
+                        <Camera className="size-8" />
+                      </div>
+                    )}
+                    <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row">
+                      <Button type="button" variant="outline" className="h-11 whitespace-normal" onClick={() => fotoInput.current?.click()}>
+                        <Camera /> {cv.foto ? "Trocar foto" : "Anexar foto"}
+                      </Button>
+                      {cv.foto && (
+                        <Button type="button" variant="ghost" className="h-11 text-destructive" onClick={() => setCv({ ...cv, foto: "" })}>
+                          <Trash2 /> Remover
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  <input ref={fotoInput} type="file" accept="image/*" capture="user" className="sr-only" onChange={anexarFoto} aria-label="Escolher foto para o currículo" />
+                  {erroFoto && <p role="alert" className="mt-2 text-[0.78em] font-semibold text-destructive">{erroFoto}</p>}
+                </div>
                 <Campo label="Nome completo" value={cv.nome} onChange={up("nome")} />
                 <Campo label="Vaga desejada" value={cv.cargo} onChange={up("cargo")} ph="Ex: Atendente" />
                 <Campo label="Telefone / WhatsApp" value={cv.telefone} onChange={up("telefone")} />
