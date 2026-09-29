@@ -29,8 +29,18 @@ function usePersist<T>(key: string, init: T) {
   const [v, setV] = useState<T>(init);
   const [ok, setOk] = useState(false);
   useEffect(() => {
-    const s = localStorage.getItem(key);
-    if (s) try { setV(JSON.parse(s)); } catch {}
+    try {
+      const s = localStorage.getItem(key);
+      if (s) {
+        const salvo = JSON.parse(s) as unknown;
+        // junta o que foi salvo com o modelo padrão, para não perder campos novos
+        setV(
+          salvo && typeof salvo === "object" && !Array.isArray(salvo)
+            ? { ...(init as object), ...(salvo as object) } as T
+            : (salvo as T),
+        );
+      }
+    } catch {}
     setOk(true);
   }, [key]);
   useEffect(() => { if (ok) localStorage.setItem(key, JSON.stringify(v)); }, [key, v, ok]);
@@ -188,7 +198,8 @@ function App() {
                 <Campo label="Telefone / WhatsApp" value={cv.telefone} onChange={up("telefone")} />
                 <Campo label="E-mail (opcional)" value={cv.email} onChange={up("email")} />
                 <div className="grid grid-cols-2 gap-3">
-                  <Campo label="Cidade" value={cv.cidade} onChange={up("cidade")} />
+                  <Campo label="Bairro" value={cv.bairro ?? ""} onChange={up("bairro")} ph="Ex: Vila Mariana" />
+                  <Campo label="Cidade" value={cv.cidade} onChange={up("cidade")} ph="Ex: São Paulo - SP" />
                   <Campo label="Idade" value={cv.idade} onChange={up("idade")} />
                 </div>
                 <Campo area label="Objetivo" value={cv.objetivo} onChange={up("objetivo")} />

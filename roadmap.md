@@ -6,4 +6,5 @@
 - [x] Foto opcional anexada pelo celular, reduzida, salva automaticamente e exibida na prévia
 - [x] Sugestões personalizadas por vaga com IA, sem enviar foto ou contatos
 - [x] Recorte, zoom e reposicionamento local da foto antes da prévia
+- [x] Campo Bairro ao lado de Cidade, exibido junto na prévia
 - [ ] Confirmação real do Pix (precisa de conta/chave Pix do recebedor)

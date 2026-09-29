@@ -18,7 +18,8 @@ function Ul({ s }: { s: string }) {
 }
 
 export function ResumePreview({ cv, formato }: { cv: Curriculo; formato: Formato }) {
-  const contato = [cv.telefone, cv.email, cv.cidade, cv.idade].filter(Boolean);
+  const endereco = [cv.bairro, cv.cidade].filter(Boolean).join(", ");
+  const contato = [cv.telefone, cv.email, endereco, cv.idade].filter(Boolean);
   const nome = cv.nome || "Seu Nome";
 
   const corpo = (h: string) => (

@@ -70,18 +70,18 @@ export const RAMOS: { id: Profissao; nome: string; emoji: string; cargo: string;
 ];
 
 export type Curriculo = {
-  nome: string; cargo: string; telefone: string; email: string; cidade: string; idade: string;
+  nome: string; cargo: string; telefone: string; email: string; bairro: string; cidade: string; idade: string;
   objetivo: string; qualidades: string; experiencia: string; formacao: string; cursos: string; foto: string;
 };
 
 export const CV_VAZIO: Curriculo = {
-  nome: "", cargo: "", telefone: "", email: "", cidade: "", idade: "",
+  nome: "", cargo: "", telefone: "", email: "", bairro: "", cidade: "", idade: "",
   objetivo: "", qualidades: "", experiencia: "", formacao: "", cursos: "", foto: "",
 };
 
 export const CV_EXEMPLO: Curriculo = {
   nome: "Maria da Silva", cargo: "Atendente", telefone: "(11) 98765-4321", email: "maria@email.com",
-  cidade: "São Paulo - SP", idade: "34 anos",
+  bairro: "Vila Mariana", cidade: "São Paulo - SP", idade: "34 anos",
   objetivo: RAMOS[0]!.objetivo, qualidades: RAMOS[0]!.qualidades,
   experiencia: "Mercado Bom Preço — Operadora de caixa (2019 - 2024)\nLoja Central — Vendedora (2016 - 2019)",
   formacao: "Ensino Médio Completo — E.E. Paulo Freire (2008)",
