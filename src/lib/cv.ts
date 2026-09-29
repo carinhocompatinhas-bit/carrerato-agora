@@ -62,7 +62,7 @@ export const CV_VAZIO: Curriculo = {
 export const CV_EXEMPLO: Curriculo = {
   nome: "Maria da Silva", cargo: "Atendente", telefone: "(11) 98765-4321", email: "maria@email.com",
   cidade: "São Paulo - SP", idade: "34 anos",
-  objetivo: RAMOS[0].objetivo, qualidades: RAMOS[0].qualidades,
+  objetivo: RAMOS[0]!.objetivo, qualidades: RAMOS[0]!.qualidades,
   experiencia: "Mercado Bom Preço — Operadora de caixa (2019 - 2024)\nLoja Central — Vendedora (2016 - 2019)",
   formacao: "Ensino Médio Completo — E.E. Paulo Freire (2008)",
   cursos: "Atendimento ao Cliente — SENAC\nInformática Básica",
