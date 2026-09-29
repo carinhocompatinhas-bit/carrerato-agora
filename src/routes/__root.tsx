@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { logClientError } from "../lib/client-error.functions";
 
 function NotFoundComponent() {
   return (
@@ -39,6 +40,14 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    logClientError({
+      data: {
+        message: String(error?.message || error).slice(0, 1000),
+        stack: error?.stack?.slice(0, 4000),
+        ua: navigator.userAgent.slice(0, 400),
+        path: window.location.pathname.slice(0, 200),
+      },
+    }).catch(() => {});
   }, [error]);
 
   const limparEAbrir = () => {
