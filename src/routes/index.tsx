@@ -188,7 +188,8 @@ function App() {
                 <Campo label="Telefone / WhatsApp" value={cv.telefone} onChange={up("telefone")} />
                 <Campo label="E-mail (opcional)" value={cv.email} onChange={up("email")} />
                 <div className="grid grid-cols-2 gap-3">
-                  <Campo label="Cidade" value={cv.cidade} onChange={up("cidade")} />
+                  <Campo label="Bairro" value={cv.bairro ?? ""} onChange={up("bairro")} ph="Ex: Vila Mariana" />
+                  <Campo label="Cidade" value={cv.cidade} onChange={up("cidade")} ph="Ex: São Paulo - SP" />
                   <Campo label="Idade" value={cv.idade} onChange={up("idade")} />
                 </div>
                 <Campo area label="Objetivo" value={cv.objetivo} onChange={up("objetivo")} />
