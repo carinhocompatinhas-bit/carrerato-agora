@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
       { title: "Currículo Fácil — Monte seu currículo pelo celular" },
       { name: "description", content: "Crie currículo e carta de apresentação em minutos, pelo celular. 5 modelos, preenchimento com 1 clique e envio pelo WhatsApp." },
       { property: "og:title", content: "Currículo Fácil — Monte seu currículo pelo celular" },
-      { property: "og:description", content: "Currículo e carta de apresentação prontos em minutos. Pague uma vez via Pix e use para sempre." },
+      { property: "og:description", content: "Currículo e carta de apresentação prontos em minutos, grátis. Envie em PDF ou pelo WhatsApp." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

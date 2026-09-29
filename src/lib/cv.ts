@@ -106,5 +106,3 @@ ${c.nome || "[seu nome]"}${c.telefone ? `\nWhatsApp: ${c.telefone}` : ""}`;
 }
 
 export const lista = (s: string) => s.split("\n").map((l) => l.trim()).filter(Boolean);
-
-export const PRECO = "R$ 14,90";

@@ -53,7 +53,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const limparEAbrir = () => {
     try {
       Object.keys(localStorage)
-        .filter((k) => k.startsWith("cf-") && k !== "cf-pago")
+        .filter((k) => k.startsWith("cf-"))
         .forEach((k) => localStorage.removeItem(k));
     } catch {}
     window.location.href = "/";
@@ -66,7 +66,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           Não foi possível abrir a página
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Tente abrir de novo. Se continuar, toque em "Limpar e abrir de novo" (seu desbloqueio é mantido).
+          Tente abrir de novo. Se continuar, toque em "Limpar e abrir de novo" para zerar o app e tentar outra vez.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
