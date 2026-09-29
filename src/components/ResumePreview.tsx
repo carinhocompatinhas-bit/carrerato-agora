@@ -51,7 +51,7 @@ export function ResumePreview({ cv, formato }: { cv: Curriculo; formato: Formato
     tradicional: { head: "text-center border-b border-cv-ink/40 pb-3 mb-4", h: "text-cv-ink border-b border-cv-ink/20 pb-0.5", wrap: "font-serif" },
     executivo: { head: "bg-cv-ink text-primary-foreground -mx-6 -mt-6 p-6 mb-5", h: "text-cv-ink tracking-[0.2em]", wrap: "" },
   };
-  const e = estilos[formato] ?? estilos.simples!;
+  const e = estilos[formato] ?? estilos['simples']!;
 
   return (
     <div className={`cv-page p-6 text-cv-ink ${e.wrap}`}>
