@@ -11,3 +11,5 @@
 
 - Fotos de currículo ficam somente no aparelho, em formato JPEG quadrado reduzido antes do salvamento, para preservar privacidade e espaço local.
 - Chamadas de análise de vaga usam uma função de servidor e enviam somente dados profissionais; foto e contatos nunca entram na solicitação de IA.
+
+- PWA manifest-only: public/manifest.webmanifest + ícones em public/; sem service worker (registro proibido em preview Lovable).

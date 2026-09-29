@@ -8,3 +8,6 @@
 - [x] Recorte, zoom e reposicionamento local da foto antes da prévia
 - [x] Campo Bairro ao lado de Cidade, exibido junto na prévia
 - [ ] Confirmação real do Pix (precisa de conta/chave Pix do recebedor)
+
+- [x] App instalável na tela inicial (manifesto + ícones, sem service worker)
+- [ ] Pix automático com confirmação real (precisa chave Pix ou gateway de pagamento)
