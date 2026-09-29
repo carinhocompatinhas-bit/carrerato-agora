@@ -1,5 +1,5 @@
 # Roadmap
-- [x] App de currículo: 5 formatos, 1 clique por ramo, carta, Pix, PDF, WhatsApp
+- [x] App de currículo: 5 formatos, 1 clique por ramo, carta, PDF, WhatsApp
 - [x] Salvamento automático a cada alteração, com aviso "salvo"
 - [x] Botões A− / A+ visíveis no preenchimento e na prévia
 - [x] Modelos adaptados por profissão, com preenchimento automático de vaga, objetivo e qualidades
@@ -7,7 +7,5 @@
 - [x] Sugestões personalizadas por vaga com IA, sem enviar foto ou contatos
 - [x] Recorte, zoom e reposicionamento local da foto antes da prévia
 - [x] Campo Bairro ao lado de Cidade, exibido junto na prévia
-- [ ] Confirmação real do Pix (precisa de conta/chave Pix do recebedor)
-
 - [x] App instalável na tela inicial (manifesto + ícones, sem service worker)
-- [ ] Pix automático com confirmação real (precisa chave Pix ou gateway de pagamento)
+- [x] App 100% gratuito — checkout Pix e trava de prévia removidos
