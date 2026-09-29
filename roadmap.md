@@ -4,4 +4,6 @@
 - [x] Botões A− / A+ visíveis no preenchimento e na prévia
 - [x] Modelos adaptados por profissão, com preenchimento automático de vaga, objetivo e qualidades
 - [x] Foto opcional anexada pelo celular, reduzida, salva automaticamente e exibida na prévia
+- [x] Sugestões personalizadas por vaga com IA, sem enviar foto ou contatos
+- [x] Recorte, zoom e reposicionamento local da foto antes da prévia
 - [ ] Confirmação real do Pix (precisa de conta/chave Pix do recebedor)

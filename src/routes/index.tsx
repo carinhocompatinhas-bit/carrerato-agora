@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { Camera, Trash2 } from "lucide-react";
+import { JobTailoring } from "@/components/JobTailoring";
+import { PhotoCropper } from "@/components/PhotoCropper";
 import { ResumePreview } from "@/components/ResumePreview";
 import { PixCheckout } from "@/components/PixCheckout";
 import { Button } from "@/components/ui/button";
@@ -57,6 +59,7 @@ function App() {
   const [checkout, setCheckout] = useState(false);
   const [previa, setPrevia] = useState(false);
   const [erroFoto, setErroFoto] = useState("");
+  const [fotoParaAjustar, setFotoParaAjustar] = useState("");
   const fotoInput = useRef<HTMLInputElement>(null);
 
   const up = (k: keyof Curriculo) => (v: string) => setCv({ ...cv, [k]: v });
@@ -84,26 +87,10 @@ function App() {
     const leitor = new FileReader();
     leitor.onload = () => {
       if (typeof leitor.result !== "string") return;
-      const imagem = new Image();
-      imagem.onload = () => {
-        const lado = Math.min(imagem.width, imagem.height);
-        const inicioX = (imagem.width - lado) / 2;
-        const inicioY = (imagem.height - lado) / 2;
-        const canvas = document.createElement("canvas");
-        canvas.width = 480;
-        canvas.height = 480;
-        const contexto = canvas.getContext("2d");
-        if (!contexto) {
-          setErroFoto("Não foi possível preparar esta foto.");
-          return;
-        }
-        contexto.drawImage(imagem, inicioX, inicioY, lado, lado, 0, 0, 480, 480);
-        setCv({ ...cv, foto: canvas.toDataURL("image/jpeg", 0.82) });
-        setErroFoto("");
-      };
-      imagem.onerror = () => setErroFoto("Não foi possível abrir esta foto.");
-      imagem.src = leitor.result;
+      setFotoParaAjustar(leitor.result);
+      setErroFoto("");
     };
+    leitor.onerror = () => setErroFoto("Não foi possível abrir esta foto.");
     leitor.readAsDataURL(arquivo);
   };
 
@@ -210,6 +197,8 @@ function App() {
                 <Campo area label="Estudos" value={cv.formacao} onChange={up("formacao")} ph="Ensino Médio Completo" />
                 <Campo area label="Cursos (opcional)" value={cv.cursos} onChange={up("cursos")} />
               </section>
+
+              <JobTailoring cv={cv} onChange={setCv} />
             </>
           ) : (
             <section className="space-y-3">
@@ -263,6 +252,16 @@ function App() {
       </nav>
 
       {checkout && <PixCheckout onClose={() => setCheckout(false)} onPaid={() => setPago(true)} />}
+      {fotoParaAjustar && (
+        <PhotoCropper
+          source={fotoParaAjustar}
+          onCancel={() => setFotoParaAjustar("")}
+          onSave={(foto) => {
+            setCv((current) => ({ ...current, foto }));
+            setFotoParaAjustar("");
+          }}
+        />
+      )}
     </div>
   );
 }
