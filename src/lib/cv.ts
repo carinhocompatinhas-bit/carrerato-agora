@@ -106,3 +106,83 @@ ${c.nome || "[seu nome]"}${c.telefone ? `\nWhatsApp: ${c.telefone}` : ""}`;
 }
 
 export const lista = (s: string) => s.split("\n").map((l) => l.trim()).filter(Boolean);
+
+// ============= Balões de sugestão de preenchimento =============
+
+export type CampoSugestao = "cargo" | "objetivo" | "qualidades" | "experiencia" | "formacao" | "cursos";
+
+const SUGESTOES_POR_RAMO: Partial<Record<Profissao, Partial<Record<CampoSugestao, string[]>>>> = {
+  comercio: {
+    objetivo: ["Gosto de atender bem as pessoas e ajudar a loja a vender mais."],
+    qualidades: ["Simpatia no atendimento", "Facilidade com dinheiro e troco", "Disponibilidade de horário"],
+    experiencia: ["Loja — Atendente (ano - ano)", "Mercado — Operador(a) de caixa (ano - ano)", "Padaria — Atendente (ano - ano)"],
+  },
+  logistica: {
+    objetivo: ["Tenho disposição para trabalho físico e para turnos variados."],
+    qualidades: ["Agilidade", "Atenção aos detalhes", "Disposição física"],
+    experiencia: ["Distribuidora — Auxiliar de Logística (ano - ano)", "Depósito — Estoquista (ano - ano)"],
+  },
+  servicos: {
+    objetivo: ["Cuido do ambiente com capricho, discrição e responsabilidade."],
+    qualidades: ["Capricho", "Discrição", "Disposição"],
+    experiencia: ["Condomínio/Escritório — Auxiliar de Limpeza (ano - ano)", "Casa de família — Diarista (dias combinados)"],
+  },
+  obras: {
+    objetivo: ["Tenho disposição para o trabalho pesado e respeito as normas de segurança."],
+    qualidades: ["Força e disposição", "Cuidado com segurança", "Aprendo rápido"],
+    experiencia: ["Construtora — Ajudante de Obras (ano - ano)", "Reforma residencial — Servente (ano - ano)"],
+  },
+  escritorio: {
+    objetivo: ["Tenho facilidade com computador e com rotinas administrativas."],
+    qualidades: ["Pacote Office básico", "Boa escrita", "Proatividade", "Atendimento ao telefone"],
+    experiencia: ["Empresa — Auxiliar Administrativo (ano - ano)", "Escritório — Recepcionista (ano - ano)"],
+  },
+  saude: {
+    objetivo: ["Gosto de cuidar das pessoas com atenção, paciência e respeito."],
+    qualidades: ["Empatia e acolhimento", "Discrição", "Atenção aos detalhes"],
+    experiencia: ["Clínica/Laboratório — Auxiliar de Saúde (ano - ano)", "Hospital — Apoio administrativo (ano - ano)"],
+  },
+  educacao: {
+    objetivo: ["Gosto de ajudar no aprendizado de crianças e jovens."],
+    qualidades: ["Paciência", "Criatividade", "Facilidade para ensinar"],
+    experiencia: ["Escola — Auxiliar de Educação (ano - ano)", "Curso/Reforço — Monitor(a) (ano - ano)"],
+  },
+  tecnologia: {
+    objetivo: ["Tenho facilidade com tecnologia e gosto de resolver problemas."],
+    qualidades: ["Raciocínio lógico", "Facilidade com tecnologia", "Resolução de problemas"],
+    experiencia: ["Empresa — Suporte Técnico (ano - ano)", "Autônomo — Manutenção de computadores (ano - ano)"],
+  },
+  primeiro: {
+    objetivo: ["Sou responsável e pontual, e quero mostrar meu melhor no primeiro emprego."],
+    qualidades: ["Vontade de aprender", "Facilidade com celular e computador", "Bom relacionamento"],
+    experiencia: ["Bazar/Feira — Vendedor(a) nos fins de semana", "Projeto da escola — Monitor(a) ou voluntário(a)"],
+  },
+};
+
+const SUGESTOES_GERAIS: Record<CampoSugestao, string[]> = {
+  cargo: RAMOS.map((r) => r.cargo),
+  objetivo: [
+    "Tenho disponibilidade de horário, inclusive fins de semana.",
+    "Posso começar a trabalhar imediatamente.",
+    "Procuro minha primeira oportunidade de trabalho.",
+    "Quero crescer junto com a empresa e aprender cada dia mais.",
+  ],
+  qualidades: ["Pontualidade", "Responsabilidade", "Trabalho em equipe", "Boa comunicação", "Vontade de aprender", "Organização", "Honestidade", "Agilidade"],
+  experiencia: ["Bicos e trabalhos informais (ano - ano)"],
+  formacao: ["Ensino Fundamental Completo", "Ensino Médio Completo", "Ensino Médio — cursando", "Curso técnico completo"],
+  cursos: ["Informática Básica", "Atendimento ao Cliente", "Segurança no Trabalho", "Excel Básico", "Vendas", "Primeiros Socorros"],
+};
+
+export function sugestoesDe(campo: CampoSugestao, ramo: Profissao | undefined): string[] {
+  const especificas = (ramo && SUGESTOES_POR_RAMO[ramo]?.[campo]) ?? [];
+  const vistas = new Set<string>();
+  const saida: string[] = [];
+  for (const sugestao of [...especificas, ...SUGESTOES_GERAIS[campo]]) {
+    const chave = sugestao.toLowerCase();
+    if (!vistas.has(chave)) {
+      vistas.add(chave);
+      saida.push(sugestao);
+    }
+  }
+  return saida.slice(0, 9);
+}
