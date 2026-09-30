@@ -127,7 +127,7 @@ function App() {
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3">
           <div className="min-w-0">
             <p className="truncate font-display text-[1.25em] font-bold leading-none">Currículo <span className="text-primary">Fácil</span></p>
-            <p className="text-[0.7em] text-muted-foreground">Grátis · <span className="text-primary">💾 Salvo automaticamente</span></p>
+            <p className="text-[0.7em] text-muted-foreground"><span className="text-primary">💾 Salvo automaticamente</span></p>
           </div>
           <div className="flex shrink-0 items-center gap-1" aria-label="Tamanho da letra">
             <button onClick={() => setLetra(Math.max(0, letra - 1))} disabled={letra === 0} aria-label="Diminuir letra" className="rounded-full border-2 border-foreground px-3 py-2 text-[0.8em] font-bold disabled:opacity-30">A−</button>
