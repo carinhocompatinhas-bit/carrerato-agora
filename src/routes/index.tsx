@@ -4,10 +4,11 @@ import { Camera, Trash2 } from "lucide-react";
 import { JobTailoring } from "@/components/JobTailoring";
 import { PhotoCropper } from "@/components/PhotoCropper";
 import { ResumePreview } from "@/components/ResumePreview";
+import { SugestoesBaloes } from "@/components/SugestoesBaloes";
 import { Button } from "@/components/ui/button";
 import {
   CV_EXEMPLO, FORMATOS, RAMOS, lista, textoCarta,
-  type Carta, type Curriculo, type Formato,
+  type Carta, type Curriculo, type Formato, type CampoSugestao, type Profissao,
 } from "@/lib/cv";
 
 export const Route = createFileRoute("/")({
@@ -83,6 +84,24 @@ function App() {
 
   const up = (k: keyof Curriculo) => (v: string) => setCv({ ...cv, [k]: v });
   const txtCarta = textoCarta(carta);
+
+  const ramoAtual: Profissao | undefined = RAMOS.find((r) => r.cargo === cv.cargo)?.id;
+
+  const adicionarSugestao = (campo: CampoSugestao, texto: string) => {
+    if (campo === "cargo") {
+      setCv({ ...cv, cargo: texto });
+      return;
+    }
+    const atual = (cv[campo] ?? "").trim();
+    const novo = campo === "objetivo"
+      ? atual ? `${atual}${/[.!?]$/.test(atual) ? "" : "."} ${texto}` : texto
+      : atual ? `${atual}\n${texto}` : texto;
+    setCv({ ...cv, [campo]: novo });
+  };
+
+  const baloes = (campo: CampoSugestao) => (
+    <SugestoesBaloes campo={campo} valor={cv[campo] ?? ""} ramo={ramoAtual} onAdd={(texto) => adicionarSugestao(campo, texto)} />
+  );
 
   const escolherProfissao = (id: (typeof RAMOS)[number]["id"]) => {
     const profissao = RAMOS.find((item) => item.id === id);
