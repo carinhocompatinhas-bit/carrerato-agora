@@ -144,7 +144,8 @@ function App() {
       const alvo = document.querySelector<HTMLElement>(".print-area .cv-page");
       if (!alvo) throw new Error("A prévia não está na tela.");
       await baixarPdfDaPrevia(alvo, aba === "carta" ? "Carta" : "Currículo", nomePdf);
-    } catch {
+    } catch (e) {
+      console.warn("pdf-fallback:", e instanceof Error ? e.message : String(e));
       const planoB = await import("@/lib/pdf-export").catch(() => null);
       if (planoB) planoB.imprimirPagina(nomePdf);
       else window.print();

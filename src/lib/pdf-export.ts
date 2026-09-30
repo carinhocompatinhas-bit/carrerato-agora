@@ -1,6 +1,27 @@
 // Gera o PDF dentro do próprio aparelho. Assim o arquivo sai limpo,
 // sem o título do site, sem endereço e sem número de página no topo.
 
+/**
+ * Procura uma linha em branco para cortar a página, evitando partir
+ * uma frase ou um quadro ao meio quando o currículo tem mais de uma página.
+ */
+function linhaDeCorte(imagem: HTMLCanvasElement, ideal: number, minimo: number) {
+  const contexto = imagem.getContext("2d");
+  if (!contexto) return ideal;
+  for (let y = ideal; y >= minimo; y--) {
+    const linha = contexto.getImageData(0, y, imagem.width, 1).data;
+    let emBranco = true;
+    for (let p = 0; p < linha.length; p += 4) {
+      if (linha[p] < 250 || linha[p + 1] < 250 || linha[p + 2] < 250) {
+        emBranco = false;
+        break;
+      }
+    }
+    if (emBranco) return y;
+  }
+  return ideal;
+}
+
 function nomeDoArquivo(titulo: string, nome: string) {
   const base = `${titulo} - ${nome}`.trim().replace(/ - $/, "");
   const limpo = base
@@ -58,7 +79,15 @@ export async function baixarPdfDaPrevia(
     let pagina = 0;
 
     while (restante > 0) {
-      const alturaFatia = Math.min(pixelsPorPagina, restante);
+      let alturaFatia = Math.min(pixelsPorPagina, restante);
+      if (restante > alturaFatia) {
+        const corte = linhaDeCorte(
+          imagem,
+          topo + alturaFatia - 1,
+          topo + Math.floor(alturaFatia * 0.65),
+        );
+        if (corte > topo) alturaFatia = corte - topo;
+      }
       const fatia = document.createElement("canvas");
       fatia.width = imagem.width;
       fatia.height = alturaFatia;
