@@ -10,3 +10,4 @@
 - [x] App instalável na tela inicial (manifesto + ícones, sem service worker)
 - [x] App 100% gratuito — checkout Pix e trava de prévia removidos
 - [x] Balões de sugestão de preenchimento por campo, mudando conforme a profissão escolhida
+- [x] PDF gerado no próprio aparelho, sem nome do site, endereço ou número de página
