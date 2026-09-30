@@ -12,7 +12,10 @@ function linhaDeCorte(imagem: HTMLCanvasElement, ideal: number, minimo: number) 
     const linha = contexto.getImageData(0, y, imagem.width, 1).data;
     let emBranco = true;
     for (let p = 0; p < linha.length; p += 4) {
-      if (linha[p] < 250 || linha[p + 1] < 250 || linha[p + 2] < 250) {
+      const r = linha[p] ?? 255;
+      const g = linha[p + 1] ?? 255;
+      const b = linha[p + 2] ?? 255;
+      if (r < 250 || g < 250 || b < 250) {
         emBranco = false;
         break;
       }
