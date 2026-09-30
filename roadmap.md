@@ -9,3 +9,4 @@
 - [x] Campo Bairro ao lado de Cidade, exibido junto na prévia
 - [x] App instalável na tela inicial (manifesto + ícones, sem service worker)
 - [x] App 100% gratuito — checkout Pix e trava de prévia removidos
+- [x] Balões de sugestão de preenchimento por campo, mudando conforme a profissão escolhida
