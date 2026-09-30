@@ -55,20 +55,16 @@ export async function baixarPdfDaPrevia(
   if (comZoom && zoomAnterior) comZoom.style.zoom = "1";
 
   try {
-    console.log("STEP1 imports-begin");
     const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
       import("html2canvas-pro"),
       import("jspdf"),
     ]);
 
-    console.log("STEP2 imports-done");
     if (document.fonts?.ready) await document.fonts.ready;
-    console.log("STEP2b fonts-ready");
 
     const largura = alvo.offsetWidth;
     const escala = Math.min(4, Math.max(2, Math.round(1600 / largura)));
 
-    console.log("STEP3 capture-begin");
     const imagem = await html2canvas(alvo, {
       scale: escala,
       backgroundColor: "#ffffff",
@@ -76,7 +72,6 @@ export async function baixarPdfDaPrevia(
       logging: false,
     });
 
-    console.log("STEP4 capture-done");
     const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
     const larguraPagina = pdf.internal.pageSize.getWidth();
     const alturaPagina = pdf.internal.pageSize.getHeight();
@@ -130,9 +125,7 @@ export async function baixarPdfDaPrevia(
       pagina += 1;
     }
 
-    console.log("STEP5 save-begin");
     pdf.save(nomeDoArquivo(titulo, nome));
-    console.log("STEP6 save-done");
   } finally {
     if (comZoom && zoomAnterior) comZoom.style.zoom = zoomAnterior;
   }
