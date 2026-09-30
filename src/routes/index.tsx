@@ -80,6 +80,7 @@ function App() {
   const [previa, setPrevia] = useState(false);
   const [erroFoto, setErroFoto] = useState("");
   const [fotoParaAjustar, setFotoParaAjustar] = useState("");
+  const [gerandoPdf, setGerandoPdf] = useState(false);
   const fotoInput = useRef<HTMLInputElement>(null);
 
   const up = (k: keyof Curriculo) => (v: string) => setCv({ ...cv, [k]: v });
@@ -132,7 +133,25 @@ function App() {
     leitor.readAsDataURL(arquivo);
   };
 
-  const baixar = () => { setPrevia(true); setTimeout(() => window.print(), 300); };
+  const baixar = async () => {
+    if (gerandoPdf) return;
+    setPrevia(true);
+    setGerandoPdf(true);
+    await new Promise((r) => window.setTimeout(r, 350));
+    const nomePdf = aba === "carta" ? (carta.nome || cv.nome) : cv.nome;
+    try {
+      const { baixarPdfDaPrevia } = await import("@/lib/pdf-export");
+      const alvo = document.querySelector<HTMLElement>(".print-area .cv-page");
+      if (!alvo) throw new Error("A prévia não está na tela.");
+      await baixarPdfDaPrevia(alvo, aba === "carta" ? "Carta" : "Currículo", nomePdf);
+    } catch {
+      const planoB = await import("@/lib/pdf-export").catch(() => null);
+      if (planoB) planoB.imprimirPagina(nomePdf);
+      else window.print();
+    } finally {
+      setGerandoPdf(false);
+    }
+  };
   const whats = () => {
     const msg = aba === "carta"
       ? txtCarta
@@ -280,7 +299,7 @@ function App() {
       <nav className="no-print fixed inset-x-0 bottom-0 z-40 border-t bg-background p-3">
         <div className="mx-auto grid max-w-5xl grid-cols-3 gap-2">
           <button onClick={() => setPrevia(!previa)} className="btn-big bg-muted lg:hidden">{previa ? "✏️ Editar" : "👁 Ver"}</button>
-          <button onClick={baixar} className="btn-big bg-foreground text-background lg:col-span-2">⬇ PDF</button>
+          <button onClick={baixar} disabled={gerandoPdf} className="btn-big bg-foreground text-background lg:col-span-2 disabled:opacity-70">{gerandoPdf ? "Gerando PDF…" : "⬇ PDF"}</button>
           <button onClick={whats} className="btn-big bg-primary text-primary-foreground lg:col-span-1">WhatsApp</button>
         </div>
       </nav>

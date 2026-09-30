@@ -13,3 +13,5 @@
 - Chamadas de análise de vaga usam uma função de servidor e enviam somente dados profissionais; foto e contatos nunca entram na solicitação de IA.
 
 - PWA manifest-only: public/manifest.webmanifest + ícones em public/; sem service worker (registro proibido em preview Lovable).
+
+- Exportação em PDF: `src/lib/pdf-export.ts` renderiza a prévia com html2canvas-pro e monta o A4 com jsPDF, cortando nas linhas em branco. Nunca usa a tela de impressão do navegador como caminho principal (ela imprime título do site, endereço e página). O plano B (tela de impressão com título neutro) só roda se a geração local falhar.
